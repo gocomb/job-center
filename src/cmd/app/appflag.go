@@ -3,7 +3,7 @@ package app
 import (
 	"flag"
 	"os"
-	"common"
+	"util"
 )
 type ServerRunOptions struct {
 	ServerDbType     string
@@ -60,27 +60,27 @@ func preFlag() {
 		flag.Parse()
 		switch k {
 		case "DbType":
-			common.DebugPrint(k, *v)
+			util.DebugPrint(k, *v)
 			if *v == "non" {
 				RunFlag.ServerDbType = osEnv.envDbType
 			}
 		case "DbIp":
-			common.DebugPrint(k, *v)
+			util.DebugPrint(k, *v)
 			if *v == "non" {
 				RunFlag.ServerDbIp = osEnv.envDbIp
 			}
 		case "DbPort":
-			common.DebugPrint(k, *v)
+			util.DebugPrint(k, *v)
 			if *v == "non" {
 				RunFlag.ServerDbPort = osEnv.envDbPort
 			}
 		case "KubeIp":
-			common.DebugPrint(k, *v)
+			util.DebugPrint(k, *v)
 			if *v == "non" {
 				RunFlag.ServerKubeIp = osEnv.envKubeIp
 			}
 		case "KubePort":
-			common.DebugPrint(k, *v)
+			util.DebugPrint(k, *v)
 			if *v == "non" {
 				RunFlag.ServerKubePort = osEnv.envKubePort
 			}

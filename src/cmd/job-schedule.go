@@ -5,17 +5,15 @@ import (
 	"time"
 	"math/rand"
 	"cmd/app"
-	_"model/collect"
-	_"dao/sql_reg"
 	"log"
 	"net/http"
 	"trigger/rest"
-	"common"
+	"util"
 )
 
 func main() {
-	if common.Debug0 == true {
-		common.DebugPrint("The cpu core is", runtime.NumCPU(), ",The app would use all of cores")
+	if util.Debug0 == true {
+		util.DebugPrint("The cpu core is", runtime.NumCPU(), ",The app would use all of cores")
 	}
 	runtime.GOMAXPROCS(runtime.NumCPU())
 	rand.Seed(time.Now().UTC().UnixNano())

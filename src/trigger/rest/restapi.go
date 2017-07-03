@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	"cmd/app"
-	"common"
+	"util"
 	"errors"
 )
 
@@ -30,7 +30,7 @@ func CollectRouters() (router *mux.Router, err error) {
 	}
 	for key, v := range routerMap {
 		var handler http.Handler
-		handler = common.HttpLog(v.HandlerFunc, key)
+		handler = util.HttpLog(v.HandlerFunc, key)
 		router.Methods(v.Method).Path(v.Path).Name(key).Handler(handler)
 		if handler == nil {
 			err = errors.New("func is wrong" + key)
