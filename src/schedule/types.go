@@ -1,6 +1,13 @@
-package schedule
+package types
 
-import "net/http"
+import (
+	"net/http"
+	"sync"
+)
+var ThreadCount sync.WaitGroup
+var statusSwitchOn chan bool
+var statusSwitchOff chan bool
+var statusSwitchLast *bool
 type JobSchedule struct {
 	Trigger
 	Job
@@ -13,8 +20,7 @@ type Trigger struct {
 type Job struct {
 	JobFunc func()error
 }
-type InitVariable struct {
-}
+
 type Rest struct {
 	Method  string
 	Path    string
