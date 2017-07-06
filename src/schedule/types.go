@@ -1,26 +1,27 @@
-package types
+package schedule
 
 import (
 	"net/http"
 	"sync"
 )
-var ThreadCount sync.WaitGroup
-var statusSwitchOn chan bool
-var statusSwitchOff chan bool
-var statusSwitchLast *bool
+
 type JobSchedule struct {
 	Trigger
 	Job
-	InitVariable
+	Init InitJob
 }
 type Trigger struct {
-	RestApi map[string]Rest
+	RestApi       map[string]Rest
 	RpcApi
+	EtcdWatch
+	ThreadTrigger ThreadTriggerTypes
 }
 type Job struct {
-	JobFunc func()error
+	JobFunc func() error
 }
+type EtcdWatch struct {
 
+}
 type Rest struct {
 	Method  string
 	Path    string
@@ -28,4 +29,14 @@ type Rest struct {
 	Handler http.Handler
 }
 type RpcApi struct {
+}
+
+type ThreadTriggerTypes struct {
+	ThreadCount      map[string]sync.WaitGroup
+	statusSwitchOn   chan bool
+	statusSwitchOff  chan bool
+	statusSwitchLast *bool
+}
+type InitJob struct {
+	InitVariable
 }

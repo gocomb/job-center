@@ -1,4 +1,4 @@
-package types
+package schedule
 
 type InitVariable struct {
 	TriggerType TriggerTypes

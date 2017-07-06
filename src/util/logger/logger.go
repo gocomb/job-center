@@ -1,4 +1,4 @@
-package util
+package logger
 
 import (
 	"log"
@@ -6,23 +6,38 @@ import (
 	"time"
 )
 
-var Debug0 = true
-var Debug1 = false
+func (a *NewLog) newLog() {
+	switch a.loggerInit.LogLevel {
+	case level1:
+		a.Set1 = printOut
+		a.Set2 = noneOut
+		a.Set3 = noneOut
+	case level2:
+		a.Set1 = printOut
+		a.Set2 = printOut
+		a.Set3 = noneOut
+	case level3:
+		a.Set1 = printOut
+		a.Set2 = printOut
+		a.Set3 = printOut
+	}
+}
 
-func init() {
-	if Debug1 == true {
-		Debug0 = true
-	}
-	if Debug0 == false {
-		Debug1 = false
-	}
+func (a *NewLog) LogRegister(c LogLevel) {
+
+	a.loggerInit.LogLevel = c
+	a.newLog()
+
 }
-func DebugPrint(parameter ...interface{}) {
-	if Debug0 == true {
-		log.Println(parameter ...)
-	}
+
+func noneOut(none ...interface{}) {
 }
-func HttpLog(inner http.Handler, name string) http.Handler {
+
+func printOut(parameter ...interface{}) {
+	log.Println(parameter...)
+}
+
+func (NewLog) HttpLog(inner http.Handler, name string) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		start := time.Now()
 		inner.ServeHTTP(w, r)
