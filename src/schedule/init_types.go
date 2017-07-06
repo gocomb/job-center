@@ -1,8 +1,11 @@
 package schedule
 
-type InitVariable struct {
-	TriggerType TriggerTypes
-}
+import (
+	"sync"
+	"util/logger"
+)
+
+
 type TriggerTypes int
 
 const (

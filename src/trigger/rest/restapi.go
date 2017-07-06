@@ -25,9 +25,6 @@ func init() {
 
 func CollectRouters() (router *mux.Router, err error) {
 	router = mux.NewRouter().StrictSlash(true).PathPrefix("/status").Subrouter() /*StrictSlash: /path/ to /path */
-	if router == nil {
-		return nil, err
-	}
 	for key, v := range routerMap {
 		var handler http.Handler
 		handler = util.HttpLog(v.HandlerFunc, key)

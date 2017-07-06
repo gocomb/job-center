@@ -1,44 +1,48 @@
 package schedule
 
 import (
-	"util"
 	"time"
 )
 
-func(a Job) runOneCycle()error{
-	err:=a.JobFunc()
+func (c *InitJob) genInitVariable() {
+
+}
+
+func (a *jobOneCycle) runOneCycle() error {
+	a.ThreadCount.Add(1)
+	err := a.JobFunc()
 	return err
 }
-func collectMainInOnCycle() {
+
+func (c *JobRunTime) cycleRunTime() {
 	//var i = 0
 	ticker := time.NewTicker(time.Millisecond * 5000)
-	util.DebugPrint("main routine is run")
+	c.logger.SetInfo("main routine is run")
 	for range ticker.C {
-		ThreadCount.Add(1)
-		util.DebugPrint("run with the state", "statusSwitchLast is", *statusSwitchLast)
+		c.logger.SetInfo("run with the state", "statusSwitchLast is", c.*statusSwitchLast)
 		select {
-		case i := <-statusSwitchOn:
-			if i != *statusSwitchLast {
-				util.DebugPrint("into the select thread in statusSwitchOn")
-				go runOneCycle()
-				*statusSwitchLast = true
-				ThreadCount.Done()
+		case i := <-c.statusSwitchOn:
+			if i != *c.statusSwitchLast {
+				c.logger.SetInfo("into the select thread in statusSwitchOn")
+				go c.runOneCycle()
+				c.*statusSwitchLast = true
+				c.ThreadCount.Done()
 			}
-		case i := <-statusSwitchOff:
-			if i != *statusSwitchLast {
-				util.DebugPrint("into the select thread in statusSwitchOff")
-				*statusSwitchLast = false
-				ThreadCount.Done()
+		case i := <-c.statusSwitchOff:
+			if i != c.*statusSwitchLast {
+				c.logger.SetInfo("into the select thread in statusSwitchOff")
+				c.*statusSwitchLast = false
+				c.ThreadCount.Done()
 			}
 		default:
-			switch *statusSwitchLast {
+			switch c.*statusSwitchLast {
 			case true:
-				util.DebugPrint("into the select thread in default on")
-				go runOneCycle()
-				ThreadCount.Done()
+				c.logger.SetInfo("into the select thread in default on")
+				go c.runOneCycle()
+				c.ThreadCount.Done()
 			case false:
-				util.DebugPrint("into the select thread in default off")
-				ThreadCount.Done()
+				c.logger.SetInfo("into the select thread in default off")
+				c.ThreadCount.Done()
 			}
 			/* i = i + 1
 			ThreadCount.Add(1)

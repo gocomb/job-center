@@ -1,14 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="GOROOT" path="C:\Go" />
   <component name="GoLibraries">
     <option name="urls">
       <list>
         <option value="file://$PROJECT_DIR$" />
       </list>
     </option>
-  </component>
-  <component name="ProjectDictionaryState">
-    <dictionary name="ming" />
   </component>
   <component name="ProjectInspectionProfilesVisibleTreeState">
     <entry key="Project Default">
@@ -20,25 +18,10 @@
         </expanded-state>
         <selected-state>
           <State>
-            <id>BashSupport</id>
+            <id>CSS</id>
           </State>
         </selected-state>
       </profile-state>
     </entry>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ScopeChooserConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>

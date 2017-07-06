@@ -3,6 +3,7 @@ package schedule
 import (
 	"net/http"
 	"sync"
+	"util/logger"
 )
 
 type JobSchedule struct {
@@ -16,8 +17,9 @@ type Trigger struct {
 	EtcdWatch
 	ThreadTrigger ThreadTriggerTypes
 }
-type Job struct {
+type jobOneCycle struct {
 	JobFunc func() error
+	InitVariable
 }
 type EtcdWatch struct {
 
@@ -37,6 +39,16 @@ type ThreadTriggerTypes struct {
 	statusSwitchOff  chan bool
 	statusSwitchLast *bool
 }
-type InitJob struct {
-	InitVariable
+type JobRunTime struct {
+	jobOneCycle
+
+}
+type InitVariable struct {
+	ThreadCount      sync.WaitGroup
+	statusSwitchOn   chan bool
+	statusSwitchOff  chan bool
+	statusSwitchLast *bool
+	LoggerLevel      logger.LogLevel
+	logger           logger.NewLog
+	TriggerType      TriggerTypes
 }
