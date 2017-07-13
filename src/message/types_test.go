@@ -6,7 +6,7 @@ import (
 )
 
 func TestNewMessage_Info(t *testing.T) {
-	c:=new(NewMessage)
+	c:=new(JobMessage)
 	bb:=c.Info("sdf","asdasdas")
 	fmt.Println(bb)
 }

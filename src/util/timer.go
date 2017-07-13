@@ -26,10 +26,9 @@ func Tick(times string, duration int64, string string, fun func() error) {
 		if err != nil {
 			LogErr(err)
 		}
-		if Debug1 == true {
 			log.Printf("%s\t%s\t%s\t%s\t", string, "ticked at ", strconv.Itoa(i), time.Now())
 		}
 
 	}
 
-}
+

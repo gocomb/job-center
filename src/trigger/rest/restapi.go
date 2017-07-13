@@ -19,6 +19,7 @@ var routerMap map[string]Router
 
 func init() {
 	routerMap = make(map[string]Router)
+	routerMap["helloWorld"] = Router{Path: "/", HandlerFunc: helloWorld, Method: "GET"}
 	routerMap["getStatus"] = Router{Path: "/{status}", HandlerFunc: getStatus, Method: "POST"}
 	routerMap["getStatusIndex"] = Router{Path: "/{status}", HandlerFunc: getStatusIndex, Method: "GET"}
 }
@@ -27,7 +28,7 @@ func CollectRouters() (router *mux.Router, err error) {
 	router = mux.NewRouter().StrictSlash(true).PathPrefix("/status").Subrouter() /*StrictSlash: /path/ to /path */
 	for key, v := range routerMap {
 		var handler http.Handler
-		handler = util.HttpLog(v.HandlerFunc, key)
+		handler = util.Logger.HttpLog(v.HandlerFunc, key)
 		router.Methods(v.Method).Path(v.Path).Name(key).Handler(handler)
 		if handler == nil {
 			err = errors.New("func is wrong" + key)
@@ -71,4 +72,9 @@ func getStatusIndex(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;   charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintln(w, "post the app status")
+}
+func helloWorld(w http.ResponseWriter, r *http.Request)  {
+	w.Header().Set("Content-Type", "application/json;   charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintln(w, "Hello world")
 }

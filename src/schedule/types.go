@@ -4,12 +4,29 @@ import (
 	"net/http"
 	"sync"
 	"util/logger"
+	"message"
 )
 
+type TriggerTypes int
+
+const (
+	_           TriggerTypes = iota
+	EtcdTrigger
+	RestTrigger
+	RpcTrigger
+)
+
+type Job struct {
+	JobSchedule
+	Trigger
+	JobRunTime
+}
+type JobRunTime struct {
+	jobOneCycle
+	Message message.JobMessage
+}
 type JobSchedule struct {
 	Trigger
-	Job
-	Init InitJob
 }
 type Trigger struct {
 	RestApi       map[string]Rest
@@ -19,10 +36,9 @@ type Trigger struct {
 }
 type jobOneCycle struct {
 	JobFunc func() error
-	InitVariable
+	initJob
 }
 type EtcdWatch struct {
-
 }
 type Rest struct {
 	Method  string
@@ -39,16 +55,22 @@ type ThreadTriggerTypes struct {
 	statusSwitchOff  chan bool
 	statusSwitchLast *bool
 }
-type JobRunTime struct {
-	jobOneCycle
 
-}
-type InitVariable struct {
+type initJob struct {
 	ThreadCount      sync.WaitGroup
 	statusSwitchOn   chan bool
 	statusSwitchOff  chan bool
+	errTrigger       chan error
 	statusSwitchLast *bool
 	LoggerLevel      logger.LogLevel
 	logger           logger.NewLog
 	TriggerType      TriggerTypes
+	JobRunTimeArgs   RegisterParameter
+}
+type RegisterParameter struct {
+	FatalMessageChan map[string]chan error
+	ErrMessageChan   map[string]chan string
+	WarnMessageChan  map[string]chan string
+	InfoMessageChan  map[string]chan string
+	DebugMassageChan map[string]chan string
 }

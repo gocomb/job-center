@@ -1,29 +1,123 @@
 package schedule
 
 import (
-	"log"
 	"net/http"
 	"trigger/rest"
+	"reflect"
+	"message"
 )
 
-func (c *InitJob) initGetTriggerType() func() {
-	switch c.InitVariable {
+func (job *Job) NewJob(trigger TriggerTypes, runTimeArg RegisterParameter, MyJob func(RegisterParameter, ...interface{}), jobArgs ...interface{}) {
+	var err chan error
+	err = make(chan error)
+	//message 初始化，暂用匿名函数，todo：以后打初始化函数
+	func() {
+		job.Message = message.JobMessage{
+			InfoMessage:  make(map[string]string),
+			FatalMessage: make(map[string]error),
+			ErrMessage:   make(map[string]string),
+			WarnMessage:  make(map[string]string),
+			DebugMassage: make(map[string]string),
+		}
+		job.JobRunTimeArgs = RegisterParameter{
+			FatalMessageChan: make(map[string]chan error),
+			ErrMessageChan:   make(map[string]chan string),
+			WarnMessageChan:  make(map[string]chan string),
+			InfoMessageChan:  make(map[string]chan string),
+			DebugMassageChan: make(map[string]chan string),
+		}
+
+	}()
+	job.logger.SetInfo("Init trigger")
+	go (job.initGetTriggerType(trigger))(&err)
+	switch trigger {
+	case RestTrigger:
+		job.jobOneCycle.JobFunc = job.JobRunTime.JobFunc
+	}
+	go MyJob(runTimeArg, jobArgs ...)
+	sind := reflect.Indirect(reflect.ValueOf(err))
+
+	switch sind.Kind() {
+	case reflect.Struct.String(), reflect.Slice:
+		if sind.Len() == 0 {
+
+		}
+	}
+	//监听监听端口发来的错误信息，若发生错误，线程结束。
+	//todo: 暂用匿名函数临时表示，以后改成独立函数方法
+	func(err *chan error) {
+
+		trggerErrMessge := <-*err
+		job.logger.SetInfo("trggerErrMessge", trggerErrMessge)
+	}(&err)
+}
+
+func (c *initJob) initGetTriggerType(trigger TriggerTypes) (func(restErr *chan error)) {
+	//多种触发方式的初始化
+	switch trigger {
 	case EtcdTrigger:
 	case RestTrigger:
-		return RestTriggerInit
+		c.logger.SetInfo("Into the Rest Trigger")
+		return c.restTriggerInit
 	case RpcTrigger:
 
 	}
-	return GetTriggerTypeDone
+	return c.restTriggerInit
 }
 
-func RestTriggerInit() {
-	log.Fatal(http.ListenAndServe(":8080", func() http.Handler {
-		s, _ := rest.CollectRouters()
-		return s
-	}()))
+//初始化路由，监听8080端口，若发生错误将错误信息传给chan，线程结束
+func (c *initJob) restTriggerInit(restErr *chan error) () {
+	go c.logger.SetFatal(func(restErr *chan error) error {
+		err := http.ListenAndServe(":8080", func() http.Handler {
+			s, _ := rest.CollectRouters()
+			return s
+		}())
+		if err != nil {
+			c.logger.SetDebug("err is ", err)
+			*restErr <- err
+		} else {
+			c.logger.SetInfo("Init the rest trigger is done")
+		}
+		return err
+	}(restErr))
+	return
 }
 
 func GetTriggerTypeDone() {
 
+}
+
+//job守护程序，控制job完成周期，阻塞与中断线程，daemon收集本job所有的message，将其传递给message
+//todo：对job进行逻辑判断，以控制job其他协程的同步，当所状态结束后，daemon协程结束，job的生命周期结束
+func (this *JobRunTime) jobDaemon() {
+	//轮询message
+		go this.getFatalChan()
+
+}
+
+//传输fatal信息通道，daemon收到fatal信号后结束线程
+func (j *JobRunTime) getFatalChan() {
+	for k, v := range j.JobRunTimeArgs.FatalMessageChan {
+		go func() {
+			select {
+			case message := <-v:
+				j.Message.FatalMessage[k] = message
+				//todo:结束线程
+
+			}
+		}()
+	}
+}
+
+//传输其他信息通道接口，daemon收到后发送message
+func (j *JobRunTime) getMessageChan() {
+	for k, v := range j.JobRunTimeArgs.InfoMessageChan {
+		go func() {
+			select {
+			case message := <-v:
+				j.Message.InfoMessage[k] = message
+
+			}
+		}()
+	}
 }
