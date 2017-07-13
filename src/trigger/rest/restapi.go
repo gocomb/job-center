@@ -4,7 +4,7 @@ import (
 	"net/http"
 	"fmt"
 	"github.com/gorilla/mux"
-	"cmd/app"
+	//"cmd/app"
 	"util"
 	"errors"
 )
@@ -52,16 +52,16 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 	status := vars["status"]
 	switch status {
 	case "false":
-		 app.TurnStatus(false)
+		 //app.TurnStatus(false)
 		//*app.Switch = false
 		responseCode200(w, r, "post turn off")
 	case "0":
 		//*app.Switch = false
-		 app.TurnStatus(false)
+		// app.TurnStatus(false)
 		responseCode200(w, r, "post turn off")
 	default:
 		//*app.Switch = true
-		app.TurnStatus(true)
+		//app.TurnStatus(true)
 		responseCode200(w, r, "post turn run")
 
 	}
