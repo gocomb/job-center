@@ -6,7 +6,7 @@ import (
 //job的一次以rest触发和周期性触发联合触发机制的完整生命周期
 //rest为job开关，置开为立刻触发job，关为关闭job的运行，并不进行周期触发
 //rest触发时对上次状态进行逻辑判断，若上次开关状态为开，再将开关置开不触发新的job
-func (c *JobRunTime) periodOfRestDelay(ticker *time.Ticker) {
+func (c *JobRunTime) runInOnePeriod(ticker *time.Ticker) {
 	c.logger.SetInfo("job routine is run, routine would be init")
 	for range ticker.C {
 		c.logger.SetInfo("run with the state", "statusSwitchLast is", *c.statusSwitchLast)

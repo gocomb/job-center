@@ -35,7 +35,8 @@ type Trigger struct {
 	ThreadTrigger ThreadTriggerTypes
 }
 type jobOneCycle struct {
-	JobFunc func() error
+	JobFunc func(interface{}) error
+	FuncArgs interface{}
 	initJob
 }
 type EtcdWatch struct {

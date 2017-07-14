@@ -7,6 +7,6 @@ import (
 
 func (a *jobOneCycle) runOneCycle() error {
 	a.ThreadCount.Add(1)
-	err := a.JobFunc()
+	err := a.JobFunc(a.FuncArgs)
 	return err
 }

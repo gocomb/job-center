@@ -10,7 +10,7 @@ import (
 func (job *Job) NewJob(trigger TriggerTypes, runTimeArg RegisterParameter, MyJob func(RegisterParameter, ...interface{}), jobArgs ...interface{}) {
 	var err chan error
 	err = make(chan error)
-	//message 初始化，暂用匿名函数，todo：以后打初始化函数
+	//message 初始化，暂用匿名函数，todo：以后打包成初始化函数
 	func() {
 		job.Message = message.JobMessage{
 			InfoMessage:  make(map[string]string),
@@ -66,6 +66,7 @@ func (c *initJob) initGetTriggerType(trigger TriggerTypes) (func(restErr *chan e
 }
 
 //初始化路由，监听8080端口，若发生错误将错误信息传给chan，线程结束
+//todo：rest的端口监听逻辑上应该不再job内部
 func (c *initJob) restTriggerInit(restErr *chan error) () {
 	go c.logger.SetFatal(func(restErr *chan error) error {
 		err := http.ListenAndServe(":8080", func() http.Handler {
