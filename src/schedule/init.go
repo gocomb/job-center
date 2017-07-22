@@ -6,28 +6,31 @@ import (
 	"reflect"
 	"message"
 )
+func initJobMesaage()*message.JobMessage{
+	return &message.JobMessage{
+		InfoMessage:  make(map[string]string),
+		FatalMessage: make(map[string]error),
+		ErrMessage:   make(map[string]string),
+		WarnMessage:  make(map[string]string),
+		DebugMassage: make(map[string]string),
+	}
+}
+
+func initMessageChan() *RegisterParameter {
+	return &RegisterParameter{
+		FatalMessageChan: make(map[string]chan error),
+		ErrMessageChan:   make(map[string]chan string),
+		WarnMessageChan:  make(map[string]chan string),
+		InfoMessageChan:  make(map[string]chan string),
+		DebugMassageChan: make(map[string]chan string),
+	}
+}
 
 func (job *Job) NewJob(trigger TriggerTypes, runTimeArg RegisterParameter, MyJob func(RegisterParameter, ...interface{}), jobArgs ...interface{}) {
 	var err chan error
 	err = make(chan error)
-	//message 初始化，暂用匿名函数，todo：以后打包成初始化函数
-	func() {
-		job.Message = message.JobMessage{
-			InfoMessage:  make(map[string]string),
-			FatalMessage: make(map[string]error),
-			ErrMessage:   make(map[string]string),
-			WarnMessage:  make(map[string]string),
-			DebugMassage: make(map[string]string),
-		}
-		job.JobRunTimeArgs = RegisterParameter{
-			FatalMessageChan: make(map[string]chan error),
-			ErrMessageChan:   make(map[string]chan string),
-			WarnMessageChan:  make(map[string]chan string),
-			InfoMessageChan:  make(map[string]chan string),
-			DebugMassageChan: make(map[string]chan string),
-		}
-
-	}()
+	job.Message =*(initJobMesaage())
+	job.JobRunTimeArgs=*(initMessageChan())
 	job.logger.SetInfo("Init trigger")
 	go (job.initGetTriggerType(trigger))(&err)
 	switch trigger {
@@ -52,7 +55,7 @@ func (job *Job) NewJob(trigger TriggerTypes, runTimeArg RegisterParameter, MyJob
 	}(&err)
 }
 
-func (c *initJob) initGetTriggerType(trigger TriggerTypes) (func(restErr *chan error)) {
+func (c *JobRunTime) initGetTriggerType(trigger TriggerTypes) (func(restErr *chan error)) {
 	//多种触发方式的初始化
 	switch trigger {
 	case EtcdTrigger:
@@ -66,8 +69,8 @@ func (c *initJob) initGetTriggerType(trigger TriggerTypes) (func(restErr *chan e
 }
 
 //初始化路由，监听8080端口，若发生错误将错误信息传给chan，线程结束
-//todo：rest的端口监听逻辑上应该不再job内部
-func (c *initJob) restTriggerInit(restErr *chan error) () {
+//todo：rest的端口监听逻辑上应该不在job内部
+func (c *JobRunTime) restTriggerInit(restErr *chan error) () {
 	go c.logger.SetFatal(func(restErr *chan error) error {
 		err := http.ListenAndServe(":8080", func() http.Handler {
 			s, _ := rest.CollectRouters()
@@ -92,33 +95,6 @@ func GetTriggerTypeDone() {
 //todo：对job进行逻辑判断，以控制job其他协程的同步，当所状态结束后，daemon协程结束，job的生命周期结束
 func (this *JobRunTime) jobDaemon() {
 	//轮询message
-		go this.getFatalChan()
-
+	go this.getFatalChan()
 }
 
-//传输fatal信息通道，daemon收到fatal信号后结束线程
-func (j *JobRunTime) getFatalChan() {
-	for k, v := range j.JobRunTimeArgs.FatalMessageChan {
-		go func() {
-			select {
-			case message := <-v:
-				j.Message.FatalMessage[k] = message
-				//todo:结束线程
-
-			}
-		}()
-	}
-}
-
-//传输其他信息通道接口，daemon收到后发送message
-func (j *JobRunTime) getMessageChan() {
-	for k, v := range j.JobRunTimeArgs.InfoMessageChan {
-		go func() {
-			select {
-			case message := <-v:
-				j.Message.InfoMessage[k] = message
-
-			}
-		}()
-	}
-}

@@ -17,16 +17,27 @@ const (
 )
 
 type Job struct {
-	JobSchedule
+	JobRegister
 	Trigger
 	JobRunTime
 }
+
 type JobRunTime struct {
-	jobOneCycle
+	LoggerLevel      logger.LogLevel
+	logger           logger.NewLog
 	Message message.JobMessage
+	ThreadCount      sync.WaitGroup
+	statusSwitchOn   chan bool
+	statusSwitchOff  chan bool
+	errTrigger       chan error
+	statusSwitchLast *bool
+
 }
-type JobSchedule struct {
-	Trigger
+type JobRegister struct {
+	TriggerType      TriggerTypes
+	JobRunTimeArgs   RegisterParameter
+	JobFunc func(interface{}) error
+	FuncArgs interface{}
 }
 type Trigger struct {
 	RestApi       map[string]Rest
@@ -34,11 +45,7 @@ type Trigger struct {
 	EtcdWatch
 	ThreadTrigger ThreadTriggerTypes
 }
-type jobOneCycle struct {
-	JobFunc func(interface{}) error
-	FuncArgs interface{}
-	initJob
-}
+
 type EtcdWatch struct {
 }
 type Rest struct {
@@ -57,17 +64,7 @@ type ThreadTriggerTypes struct {
 	statusSwitchLast *bool
 }
 
-type initJob struct {
-	ThreadCount      sync.WaitGroup
-	statusSwitchOn   chan bool
-	statusSwitchOff  chan bool
-	errTrigger       chan error
-	statusSwitchLast *bool
-	LoggerLevel      logger.LogLevel
-	logger           logger.NewLog
-	TriggerType      TriggerTypes
-	JobRunTimeArgs   RegisterParameter
-}
+
 type RegisterParameter struct {
 	FatalMessageChan map[string]chan error
 	ErrMessageChan   map[string]chan string

@@ -3,10 +3,11 @@ package schedule
 import (
 	"time"
 )
+
 //job的一次以rest触发和周期性触发联合触发机制的完整生命周期
 //rest为job开关，置开为立刻触发job，关为关闭job的运行，并不进行周期触发
 //rest触发时对上次状态进行逻辑判断，若上次开关状态为开，再将开关置开不触发新的job
-func (c *JobRunTime) runInOnePeriod(ticker *time.Ticker) {
+func (c *JobRunTime) runOnePeriod(ticker *time.Ticker) {
 	c.logger.SetInfo("job routine is run, routine would be init")
 	for range ticker.C {
 		c.logger.SetInfo("run with the state", "statusSwitchLast is", *c.statusSwitchLast)
@@ -37,6 +38,24 @@ func (c *JobRunTime) runInOnePeriod(ticker *time.Ticker) {
 		}
 	}
 }
+func (c *JobRunTime) restTriggerOn(now bool, Last bool) {
+	if now != Last {
+		c.logger.SetInfo("into the select thread in statusSwitchOn")
+		go c.runOneCycle()
+		Last = true
+		c.ThreadCount.Done()
+	}
+}
+func (c *JobRunTime) restTriggerOff(now bool, Last bool) () {
+	if now != Last {
+		c.logger.SetInfo("into the select thread in statusSwitchOff")
+		*c.statusSwitchLast = false
+		c.ThreadCount.Done()
+	}
+
+
+}
+
 /*
 func (c *JobRunTime) restConstantPeriod(ticker *time.Ticker) {
 	c.logger.SetInfo("main routine is run")
