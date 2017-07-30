@@ -3,8 +3,8 @@ package schedule
 import (
 	"net/http"
 	"sync"
-	"util/logger"
-	"message"
+	"github.com/job-schedule/util/logger"
+	"github.com/job-schedule/message"
 )
 
 type TriggerTypes int

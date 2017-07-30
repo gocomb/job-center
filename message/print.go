@@ -1,6 +1,6 @@
 package message
 
-import "util/logger"
+import "github.com/job-schedule/util/logger"
 
 func (c *JobMessage) Info(m ...interface{})interface{} {
 	s := new(logger.NewLog)

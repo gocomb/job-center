@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	//"cmd/app"
-	"util"
+	"github.com/job-schedule/util"
 	"errors"
 )
 
@@ -52,7 +52,7 @@ func getStatus(w http.ResponseWriter, r *http.Request) {
 	status := vars["status"]
 	switch status {
 	case "false":
-		 //app.TurnStatus(false)
+		//app.TurnStatus(false)
 		//*app.Switch = false
 		responseCode200(w, r, "post turn off")
 	case "0":
@@ -73,7 +73,7 @@ func getStatusIndex(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintln(w, "post the app status")
 }
-func helloWorld(w http.ResponseWriter, r *http.Request)  {
+func helloWorld(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json;   charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintln(w, "Hello world")

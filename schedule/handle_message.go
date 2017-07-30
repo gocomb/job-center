@@ -1,7 +1,7 @@
 package schedule
 
 import (
-	"util/logger"
+	"github.com/job-schedule/util/logger"
 	"runtime"
 )
 
