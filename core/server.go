@@ -4,7 +4,7 @@ import (
 	"context"
 	"reflect"
 	"fmt"
-	"github.com/job-schedule/core/util"
+	"github.com/job-center/core/util"
 )
 
 var ctxMessage chan string = make(chan string)

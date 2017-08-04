@@ -2,9 +2,9 @@ package runtime
 
 import (
 	"net/http"
-	"github.com/job-schedule/core/trigger/rest"
+	"github.com/job-center/core/trigger/rest"
 	"reflect"
-	"github.com/job-schedule/core/message"
+	"github.com/job-center/core/message"
 )
 func initJobMesaage()*message.JobMessage{
 	return &message.JobMessage{

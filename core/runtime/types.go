@@ -3,8 +3,8 @@ package runtime
 import (
 	"net/http"
 	"sync"
-	"github.com/job-schedule/core/util/logger"
-	"github.com/job-schedule/core/message"
+	"github.com/job-center/core/util/logger"
+	"github.com/job-center/core/message"
 )
 
 type TriggerTypes int

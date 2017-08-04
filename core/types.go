@@ -1,7 +1,7 @@
 package core
 
 import (
-	"github.com/job-schedule/core/message"
+	"github.com/job-center/core/message"
 	"context"
 )
 

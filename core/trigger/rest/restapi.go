@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"github.com/gorilla/mux"
 	//"cmd/app"
-	"github.com/job-schedule/core/util"
+	"github.com/job-center/core/util"
 	"errors"
 )
 

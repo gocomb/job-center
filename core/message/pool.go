@@ -1,6 +1,6 @@
 package message
 
-import ."github.com/job-schedule/core/cache"
+import ."github.com/job-center/core/cache"
 //Generate a new message pool
 func (p *Pool) NewPool() {
 	p.Cache = Register("myRepo")

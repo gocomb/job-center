@@ -6,7 +6,7 @@ import (
 	"math/rand"
 
 	"fmt"
-	"github.com/job-schedule/core"
+	"github.com/job-center/core"
 )
 
 func jobExample(ctx core.JobContext) {

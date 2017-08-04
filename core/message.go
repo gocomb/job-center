@@ -1,8 +1,8 @@
 package core
 
 import (
-	"github.com/job-schedule/core/monitor"
-	"github.com/job-schedule/core/util"
+	"github.com/job-center/core/monitor"
+	"github.com/job-center/core/util"
 
 )
 
