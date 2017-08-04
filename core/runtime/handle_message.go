@@ -1,4 +1,4 @@
-package schedule
+package runtime
 
 import (
 	"github.com/job-schedule/core/util/logger"

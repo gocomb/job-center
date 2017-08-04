@@ -5,31 +5,27 @@ import (
 	"reflect"
 	"fmt"
 	"github.com/job-schedule/core/util"
-	"github.com/job-schedule/core/monitor"
 )
 
 var ctxMessage chan string = make(chan string)
 
-func (c *JobContext) SetFatal(message string) *monitor.Method {
-	c.jobLog["fatal"+util.GenTag(message)] = message
-	util.Logger.SetDebug(c.jobLog)
-	return &monitor.Method{Message: message, DoContext: ctxMessage}
-}
-
 //run a job
+//It is a the entrance of a job
 func Run(jobName RegisterJob) {
-	var done chan string
-	done = make(chan string)
-	ut := JobContext{}
-	job := new(jobServer)
+	var (
+		done chan string = make(chan string)
+		job  *jobServer  = new(jobServer)
+		ctx              = JobContext{}
+	)
+
 	job = job.jobFactory(jobName)
 	//初始化map
 
-	ut.jobLog = make(map[string]string)
+	ctx.jobLog = make(map[string]string)
 	//初始化结束
 
-	go job.NewJob(ut)
-	go job.jobDaemon(ut, done)
+	go job.NewJob(ctx)
+	go job.jobDaemon(ctx, done)
 	<-done
 	<-ctxMessage
 
@@ -51,6 +47,11 @@ func (j *jobServer) jobDaemon(ut JobContext, done chan string) {
 
 	util.Logger.SetInfo("done")
 	done <- "done"
+
+}
+
+//Generate a log object based on the log level
+func (j *jobServer) logFactory() {
 
 }
 func (j *jobServer) messageDaemon(ctx context.Context) {
@@ -79,7 +80,7 @@ func (j *jobServer) messageChanFactory(message interface{}) {
 		fmt.Println(k, v)
 	}
 }
-func (j *jobServer) collectFatalMessage() map[string]error {
+func (j *jobServer) collectFatalMessage() map[string]string {
 	return j.JobMessage.FatalMessage
 }
 func (j *jobServer) initMessage() {

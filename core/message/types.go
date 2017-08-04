@@ -2,10 +2,10 @@ package message
 
 import (
 	. "github.com/job-schedule/core/cache"
-
 )
+
 type JobMessage struct {
-	FatalMessage map[string]error
+	FatalMessage map[string]string
 	ErrMessage   map[string]string
 	WarnMessage  map[string]string
 	InfoMessage  map[string]string
