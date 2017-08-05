@@ -1,8 +1,8 @@
 package monitor
 
 import (
-	"fmt"
-	"github.com/job-center/core/util"
+
+	"github.com/job-center/server/util"
 )
 //handle the message method
 type Method struct {
@@ -17,7 +17,7 @@ func NewMonitor() {
 
 //the method function
 func (c *Method) Do(method string) {
-	fmt.Println("hello monote")
+	util.Logger.SetDebug("hello monitor")
 	c.doByContext(method, c.DoContext)
 
 }
@@ -29,5 +29,5 @@ func (c *Method) doByContext(method string, ctx chan string) {
 		util.Logger.SetFatal(c.Message)
 	}
 	//by experiment, in golang, like xx.Func.Func is parallel process，needs to be processed synchronously
-	ctx <- "do"
+	//ctx <- "done"
 }

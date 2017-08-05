@@ -1,12 +1,24 @@
-package core
+package server
 
 import (
-	"github.com/job-center/core/message"
+	"github.com/job-center/pkg/message"
 	"context"
 )
 
+type TriggerTypes int
+
+const (
+	_           TriggerTypes = iota
+	EtcdTrigger
+	RestTrigger
+	RpcTrigger
+)
+
+type InitJob struct {
+	TriggerTypes TriggerTypes
+}
 //Register a Job. It is the The first thing to run a job
-// It can be simply as core.RegisterJob{NewJob: jobExample}
+// It can be simply as server.RegisterJob{NewJob: jobExample}
 type RegisterJob struct {
 	NewJob     func(JobContext)
 	JobMessage message.JobMessage
@@ -19,13 +31,18 @@ type RegisterJob struct {
 //As the parameter of job, JobContext is a bridge link to jobServer
 type JobContext struct {
 	jobLog map[string]string
-	ctx    context.Context
+	syncVar
 }
 
 // jobServer is the base struct of job-centre
 type jobServer struct {
 	RegisterJob
+	JobContext
+	jobMessage
+}
+type jobMessage struct {
 	messagePool message.Pool
+	JobMessageChan
 }
 
 // JobMessageChan is a bridge link to pool and jobServer
@@ -35,4 +52,10 @@ type JobMessageChan struct {
 	WarnMessageChan  map[string]chan string
 	InfoMessageChan  map[string]chan string
 	DebugMassageChan map[string]chan string
+}
+
+//manage job life cycle
+type syncVar struct {
+	jobDone    chan string
+	ctxMessage chan string
 }

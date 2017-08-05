@@ -2,11 +2,13 @@ package runtime
 
 import (
 	"net/http"
-	"github.com/job-center/core/trigger/rest"
 	"reflect"
-	"github.com/job-center/core/message"
+
+	"github.com/job-center/pkg/message"
+	"github.com/job-center/server/trigger/rest"
 )
-func initJobMesaage()*message.JobMessage{
+
+func initJobMesaage() *message.JobMessage {
 	return &message.JobMessage{
 		InfoMessage:  make(map[string]string),
 		FatalMessage: make(map[string]string),
@@ -29,15 +31,15 @@ func initMessageChan() *RegisterParameter {
 func (job *Job) NewJob(trigger TriggerTypes, runTimeArg RegisterParameter, MyJob func(RegisterParameter, ...interface{}), jobArgs ...interface{}) {
 	var err chan error
 	err = make(chan error)
-	job.Message =*(initJobMesaage())
-	job.JobRunTimeArgs=*(initMessageChan())
+	job.Message = *(initJobMesaage())
+	job.JobRunTimeArgs = *(initMessageChan())
 	job.logger.SetInfo("Init trigger")
 	go (job.initGetTriggerType(trigger))(&err)
 	switch trigger {
 	case RestTrigger:
 		job.jobOneCycle.JobFunc = job.JobRunTime.JobFunc
 	}
-	go MyJob(runTimeArg, jobArgs ...)
+	go MyJob(runTimeArg, jobArgs...)
 	sind := reflect.Indirect(reflect.ValueOf(err))
 
 	switch sind.Kind() {
@@ -55,7 +57,7 @@ func (job *Job) NewJob(trigger TriggerTypes, runTimeArg RegisterParameter, MyJob
 	}(&err)
 }
 
-func (c *JobRunTime) initGetTriggerType(trigger TriggerTypes) (func(restErr *chan error)) {
+func (c *JobRunTime) initGetTriggerType(trigger TriggerTypes) func(restErr *chan error) {
 	//多种触发方式的初始化
 	switch trigger {
 	case EtcdTrigger:
@@ -70,7 +72,7 @@ func (c *JobRunTime) initGetTriggerType(trigger TriggerTypes) (func(restErr *cha
 
 //初始化路由，监听8080端口，若发生错误将错误信息传给chan，线程结束
 //todo：rest的端口监听逻辑上应该不在job内部
-func (c *JobRunTime) restTriggerInit(restErr *chan error) () {
+func (c *JobRunTime) restTriggerInit(restErr *chan error) {
 	go c.logger.SetFatal(func(restErr *chan error) error {
 		err := http.ListenAndServe(":8080", func() http.Handler {
 			s, _ := rest.CollectRouters()
@@ -97,4 +99,3 @@ func (this *JobRunTime) jobDaemon() {
 	//轮询message
 	go this.getFatalChan()
 }
-

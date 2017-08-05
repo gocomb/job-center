@@ -2,7 +2,7 @@ package runtime
 
 import (
 	"testing"
-	"github.com/job-center/core/util/logger"
+	"github.com/job-center/server/util/logger"
 	"fmt"
 )
 
