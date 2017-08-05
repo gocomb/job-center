@@ -1,7 +1,7 @@
 package message
 
 import (
-	. "github.com/job-center/core/cache"
+	. "github.com/job-center/pkg/cache"
 )
 
 type JobMessage struct {

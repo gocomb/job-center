@@ -1,8 +1,9 @@
 package runtime
 
 import (
-	"github.com/job-center/core/util/logger"
 	"runtime"
+
+	"github.com/job-center/server/util/logger"
 )
 
 //传输fatal信息通道，daemon收到fatal信号后结束线程

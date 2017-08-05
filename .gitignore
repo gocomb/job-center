@@ -18,5 +18,4 @@
 .gitignore
 .idea/job-schedule.iml
 .idea/modules.xml
-pkg/
 Would skip repository src/github.com/gorilla/mux

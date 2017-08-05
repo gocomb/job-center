@@ -1,12 +1,15 @@
 package rest
 
 import (
-	"net/http"
 	"fmt"
+	"net/http"
+
 	"github.com/gorilla/mux"
-	//"cmd/app"
-	"github.com/job-center/core/util"
+
 	"errors"
+
+	//"cmd/app"
+	"github.com/job-center/server/util"
 )
 
 type Router struct {
