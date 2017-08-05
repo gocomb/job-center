@@ -1,4 +1,5 @@
 # job-center
+![Build Status](https://travis-ci.org/koko990/service-center.svg?branch=master)
 ## 概述
 job-center设计初衷为任务调度、触发、管控的平台，job-center以go语言包方式的方式加载，
 将job的入口方法传递给job-center编译成二进制程序执行，job-center在一个二进制程序内部代理job对外吐

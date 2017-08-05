@@ -9,7 +9,7 @@ import (
 func initJobMesaage()*message.JobMessage{
 	return &message.JobMessage{
 		InfoMessage:  make(map[string]string),
-		FatalMessage: make(map[string]error),
+		FatalMessage: make(map[string]string),
 		ErrMessage:   make(map[string]string),
 		WarnMessage:  make(map[string]string),
 		DebugMassage: make(map[string]string),
@@ -18,7 +18,7 @@ func initJobMesaage()*message.JobMessage{
 
 func initMessageChan() *RegisterParameter {
 	return &RegisterParameter{
-		FatalMessageChan: make(map[string]chan error),
+		FatalMessageChan: make(map[string]chan string),
 		ErrMessageChan:   make(map[string]chan string),
 		WarnMessageChan:  make(map[string]chan string),
 		InfoMessageChan:  make(map[string]chan string),

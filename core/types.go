@@ -28,5 +28,11 @@ type jobServer struct {
 	messagePool message.Pool
 }
 
-type JobMessage struct {
+// JobMessageChan is a bridge link to pool and jobServer
+type JobMessageChan struct {
+	FatalMessageChan map[string]chan string
+	ErrMessageChan   map[string]chan string
+	WarnMessageChan  map[string]chan string
+	InfoMessageChan  map[string]chan string
+	DebugMassageChan map[string]chan string
 }
