@@ -8,7 +8,7 @@ import (
 
 func TestMutex_Lock(t *testing.T) {
 
-	m := New("/etcdsync", 123, []string{"http://10.110.18.107:2379"})
+	m :=  LockFactory("/etcdsync", 123, []string{"http://localhost:4001"})
 	if m == nil {
 		util.Logger.SetInfo("etcdsync.NewMutex failed")
 	}
