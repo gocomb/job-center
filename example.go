@@ -4,6 +4,7 @@ import (
 	"math/rand"
 	"runtime"
 	"time"
+	"github.com/job-center/pkg/grpc"
 
 	"github.com/job-center/server"
 	"github.com/job-center/server/util"
@@ -35,6 +36,11 @@ func main() {
 	a:=server.InitJob{server.RestTrigger}
 	a.Init()
 	myServer := server.RegisterJob{NewJob: jobExample}
+	srConn:=grpc.RpcFlowServer{Port:":50051"}
+	go srConn.ServerConn()
+	clConn:=grpc.RpcClient{Address:"localhost:50051"}
+	go clConn.RpcClient()
 	server.Run(myServer)
+
 
 }

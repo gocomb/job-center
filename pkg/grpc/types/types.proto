@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "job-center.pkg.grpc";
+option java_outer_classname = "types";
+
+package types;
+
+
+service RpcFlow {
+    rpc TestClinet (RpcFlowRequest) returns (RpcFlowResponse) {
+    }
+}
+
+
+message RpcFlowRequest {
+    string Request = 1;
+}
+
+
+message RpcFlowResponse {
+    string Response = 1;
+}
+
