@@ -1,9 +1,9 @@
 package monitor
 
 import (
-
 	"github.com/job-center/server/util"
 )
+
 //handle the message method
 type Method struct {
 	Message string

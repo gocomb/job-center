@@ -27,7 +27,7 @@ const (
 )
 
 // Init initializes a client, connected to etcdsync server.
-func Init(endpoints []string) {
+func NewClient(endpoints []string) {
 	cfg := client.Config{
 		Endpoints: endpoints,
 		Transport: client.DefaultTransport,

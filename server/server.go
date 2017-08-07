@@ -2,11 +2,9 @@ package server
 
 import (
 	"context"
-
 	"sync"
 
 	"github.com/job-center/server/trigger/rest"
-
 	"github.com/job-center/server/util"
 )
 

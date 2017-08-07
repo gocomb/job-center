@@ -1,11 +1,12 @@
 package cache
 
 import (
+	"bytes"
 	"errors"
 	"sync"
 	"time"
-	"bytes"
 )
+
 type Cache interface {
 	// get cached value by key.
 	Get(key string) interface{}
@@ -22,7 +23,7 @@ type Cache interface {
 	// check if cached value exists or not.
 	IsExist(key string) bool
 	//Traverse the cache to get val with match string.
-	MatchQueryKey(keyMatch string)[]interface{}
+	MatchQueryKey(keyMatch string) []interface{}
 	// clear all cache.
 	ClearAll() error
 }
@@ -36,7 +37,7 @@ type MemoryItem struct {
 // MemoryCache is Memory cache adapter.
 // it contains a RW locker for safe map storage.
 type MemoryCache struct {
-	key   interface{}
+	key interface{}
 	sync.RWMutex
 	dur   time.Duration
 	items map[string]*MemoryItem
@@ -197,6 +198,7 @@ func (bc *MemoryCache) MatchQueryKey(keyMatch string) []interface{} {
 	}
 	return rc
 }
+
 //Register a cache, if return a ptr link interface
 func Register(repoName string) Cache {
 	return NewMemoryCache(repoName)
