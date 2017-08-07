@@ -6,8 +6,7 @@ import (
 )
 
 func TestInit(t *testing.T) {
-	NewClient([]string{"http://10.110.18.107:2379"})
-	c := GetClient()
+	c:=NewClient([]string{"http://localhost:4001"})
 	c.CreateDir("/demo")
 	fmt.Println("demo is ", c.IsDirExist("/demo"))
 	c.Set("demoKey", "demo val")

@@ -3,7 +3,6 @@ package etcdsync
 import (
 	"context"
 	"fmt"
-	"io"
 	"os"
 	"sync"
 	"time"
@@ -28,13 +27,12 @@ type Mutex struct {
 	ctx    context.Context
 	ttl    time.Duration
 	mutex  *sync.Mutex
-	logger io.Writer
 }
 
 // New creates a Mutex with the given key which must be the same
 // across the cluster nodes.
 // machines are the ectd cluster addresses
-func New(key string, ttl int, machines []string) *Mutex {
+func LockFactory(key string, ttl int, machines []string) *Mutex {
 	cfg := client.Config{
 		Endpoints:               machines,
 		Transport:               client.DefaultTransport,
