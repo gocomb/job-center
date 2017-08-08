@@ -82,26 +82,21 @@ func (m *Mutex) Lock() (err error) {
 			return nil
 		}
 
-		util.Logger.SetDebug("Lock node %v ERROR %v", m.key, err)
 		if try < defaultTry {
-			util.Logger.SetDebug("Try to lock node %v again", m.key, err)
 		}
 	}
 	return err
 }
 
 func (m *Mutex) lock() (err error) {
-	util.Logger.SetDebug("Trying to create a node : key=%v", m.key)
 	setOptions := &client.SetOptions{
 		PrevExist: client.PrevNoExist,
 		TTL:       m.ttl,
 	}
 	resp, err := m.kapi.Set(m.ctx, m.key, m.id, setOptions)
 	if err == nil {
-		util.Logger.SetDebug("Create node %v OK [%q]", m.key, resp)
 		return nil
 	}
-	util.Logger.SetDebug("Create node %v failed [%v]", m.key, err)
 	e, ok := err.(client.Error)
 	if !ok {
 		return err
@@ -116,20 +111,16 @@ func (m *Mutex) lock() (err error) {
 	if err != nil {
 		return err
 	}
-	util.Logger.SetDebug("Get node %v OK", m.key)
 	watcherOptions := &client.WatcherOptions{
 		AfterIndex: resp.Index,
 		Recursive:  false,
 	}
 	watcher := m.kapi.Watcher(m.key, watcherOptions)
 	for {
-		util.Logger.SetDebug("Watching %v ...", m.key)
 		resp, err = watcher.Next(m.ctx)
 		if err != nil {
 			return err
 		}
-
-		util.Logger.SetDebug("Received an event : %q", resp)
 		if resp.Action == deleteAction || resp.Action == expireAction {
 			return nil
 		}
@@ -149,10 +140,9 @@ func (m *Mutex) Unlock() (err error) {
 		var resp *client.Response
 		resp, err = m.kapi.Delete(m.ctx, m.key, nil)
 		if err == nil {
-			util.Logger.SetDebug("Delete %v OK", m.key)
 			return nil
 		}
-		util.Logger.SetDebug("Delete %v falied: %q", m.key, resp)
+		util.Logger.SetDebug("Delete ", m.key, ":",resp)
 		e, ok := err.(client.Error)
 		if ok && e.Code == client.ErrorCodeKeyNotFound {
 			return nil
